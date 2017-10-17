@@ -1,3 +1,6 @@
+<?php
+	$logout = '../login-example/logout.php';
+?>
 <body>
 	<nav class="navbar navbar-default navbar-static-top">
 		<div class="container">	
@@ -18,7 +21,7 @@
 						<li class="active"><a href="welcome.php">HOME</a></li>
 						<li><a href="#">PRODUCTS</a></li>
 						<li><a href="#">CART</a></li>
-						<li><a href="#">Logout</a></li>
+						<li><a href="<?= $logout; ?>">Logout</a></li>
 					</ul>
 				</div>
 			</div>

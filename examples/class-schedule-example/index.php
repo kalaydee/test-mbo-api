@@ -80,7 +80,7 @@
 		}
 		return $classesByDate;
 	}
-?>	
+?>
 		</div>
 	</div>
 </body>
