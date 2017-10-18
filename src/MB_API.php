@@ -4,7 +4,7 @@ class MB_API {
 	protected $client;
 	protected $sourceCredentials = array(
 		"SourceName"=>'ScaleUpMarketingAsia', 
-		"Password"=>'0qdTi1kDi/5YVDvtu9YdQNuJGV4=', 
+		"Password"=>'1a4prK7PqFKXzYWOIekDKtRlOrs=', 
 		"SiteIDs"=>array('-99')
 	);
 	/*

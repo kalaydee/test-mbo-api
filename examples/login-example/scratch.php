@@ -1,4 +1,12 @@
-            <!-- <div class="col-md-6 col-md-offset-3">	
+<?php
+    session_start();
+    include '../includes/header.php';
+    include '../includes/nav.php';
+
+    $birthDate = date_create($_SESSION['client']['BirthDate']);
+    $birthDate = date_format($birthDate,"M d, Y");
+?>            
+            <div class="col-md-6 col-md-offset-3">	
                 <div class="col-md-12" style="margin-top: 20px;">
                     <div class="row">
                         <div class="col-md-6">
@@ -38,4 +46,4 @@
                         <pre><?= print_r($_SESSION); ?></pre>
                     </div>
                 </div>
-            </div> -->
+            </div>

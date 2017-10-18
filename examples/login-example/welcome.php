@@ -2,29 +2,47 @@
     session_start();
     include '../includes/header.php';
     include '../includes/nav.php';
-
-    $birthDate = date_create($_SESSION['client']['BirthDate']);
-    $birthDate = date_format($birthDate,"M d, Y");
 ?>
 	<div class="container">
 		<div class="row">
-            <?php
+<?php
+    if(isset($_POST['signIn'])){
+        $client_ID = $_POST['clientID'];
+        $class_ID = $_POST['classID'];
+
+        $addClientToClass = $mb->AddClientsToClasses(array($client_ID),array($class_ID));
+
+        if($addClientToClass){
+            $message = "Success!";
+            echo "<script type='text/javascript'>
+                    alert('$message');
+                </script>";
+        }else{
+            $message = "Something went wrong!";
+            echo "<script type='text/javascript'>
+                    alert('$message');
+                </script>";
+        }
+    }
+
     if(!empty($data['GetClassesResult']['Classes']['Class'])) :
         $classes = $mb->makeNumericArray($data['GetClassesResult']['Classes']['Class']);
         $classes = sortClassesByDate($classes);
         foreach($classes as $classDate => $classes) :
             $classFormat = date_create($classDate);
-            $classFormat = date_format($classFormat,"M d,Y");
+            $classFormat = date_format($classFormat,"M d, Y");
             // echo $classDate.'<br />';
 ?>
             <label class="control-label"><?= $classFormat; ?></label>
-            <table class="table table-condensed table-hover table-striped table-bordered">
-                <thead><tr>
-                    <th>Class Name</th><th>Class Instructor/Teacher</th><th>Date</th><th>Time</th>
-                </tr></thead>
-                <tbody>
+            <form method="POST">    
+                <table class="table table-condensed table-hover table-striped table-bordered">
+                    <thead><tr>
+                        <th>Class Name</th><th>Class Instructor/Teacher</th><th>Date</th><th>Time</th><th>Status</th><th></th>
+                    </tr></thead>
+                    <tbody>
         <?php
             foreach($classes as $class) :
+                // echo '<pre>'.print_r($class,1).'</pre>';
                 $sDate = date('m/d/Y', strtotime($class['StartDateTime']));
                 $sLoc = $class['Location']['ID'];
                 $sTG = $class['ClassDescription']['Program']['ID'];
@@ -36,7 +54,7 @@
                 // $startDateTime = date('Y-m-d H:i:s', strtotime($class['StartDateTime']));
                 // $endDateTime = date('Y-m-d H:i:s', strtotime($class['EndDateTime']));
                 $startDate = date_create($class['StartDateTime']);
-                $startDate = date_format($startDate,"M d,Y");
+                $startDate = date_format($startDate,"M d, Y");
                 $timeStart = date_create($class['StartDateTime']);
                 $timeStart = date_format($timeStart,"h:i A");
                 $timeEnd = date_create($class['EndDateTime']);
@@ -44,15 +62,32 @@
                 $staffName = $class['Staff']['Name'];
                 // echo "<a href='{$linkURL}'>{$className}</a> w/ {$staffName} {$startDateTime} - {$endDateTime}<br />";
         ?>
-                    <tr>
-                        <td><a href="<?= $linkURL; ?>"><?= $className; ?></a></td>
-                        <td><?= $staffName; ?></td>
-                        <td><?= $startDate; ?></td>
-                        <td><?= $timeStart.' - '.$timeEnd; ?></td>
-                    </tr>
+                        <tr>
+                            <td>
+                                <a href="<?= $linkURL; ?>"><?= $className; ?></a>
+                                <input type="hidden" name="clientID" value="<?= $_SESSION['client']['ID']; ?>">
+                                <input type="hidden" name="classID" value="<?= $class['ID']; ?>">
+                            </td>
+                            <td><?= $staffName; ?></td>
+                            <td><?= $startDate; ?></td>
+                            <td><?= $timeStart.' - '.$timeEnd; ?></td>
+                <?php
+                    if($class['IsCanceled']==1):
+                ?>        
+                            <td>Cancelled</td>
+                <?php
+                    elseif($class['IsCanceled']==0):
+                ?>
+                            <td>Go!</td>
+                <?php endif; ?>
+                            <td>
+                                <button type="submit" name="signIn" class="btn btn-default btn-sm"><span></span>Sign In</button>
+                            </td>
+                        </tr>
         <?php endforeach; ?>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </form>
 <?php
         endforeach;
     else :
